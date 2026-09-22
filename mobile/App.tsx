@@ -1,0 +1,16 @@
+import { useRef, useState } from "react";
+import { FlatList, Pressable, SafeAreaView, StyleSheet, Text, View, Dimensions } from "react-native";
+import { Video, ResizeMode } from "expo-av";
+
+const items = [
+  { id: "1", title: "The 10-minute reset that changed my mornings", creator: "@mayamakes", color: "#ff8a4c", uri: "https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" },
+  { id: "2", title: "Crispy chili noodles with a five-ingredient sauce", creator: "@omarcooks", color: "#7957e8", uri: "https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" }
+];
+
+export default function App() {
+  const [liked, setLiked] = useState<string[]>([]);
+  const [playing, setPlaying] = useState<string | null>(null);
+  return <SafeAreaView style={styles.safe}><View style={styles.header}><Text style={styles.logo}>✦ pulse</Text><Text style={styles.search}>⌕</Text></View><FlatList data={items} pagingEnabled showsVerticalScrollIndicator={false} keyExtractor={item => item.id} renderItem={({ item }) => <View style={[styles.card, { backgroundColor: item.color }]}><Video source={{ uri: item.uri }} style={StyleSheet.absoluteFill} resizeMode={ResizeMode.COVER} isLooping shouldPlay={playing === item.id} /><View style={styles.shade}/><View style={styles.copy}><Text style={styles.tag}>CREATOR PICK</Text><Text style={styles.title}>{item.title}</Text><Text style={styles.creator}>{item.creator}</Text></View><View style={styles.actions}><Pressable onPress={() => setLiked(current => current.includes(item.id) ? current.filter(id => id !== item.id) : [...current, item.id])}><Text style={styles.action}>{liked.includes(item.id) ? "♥" : "♡"}{"\n"}<Text style={styles.count}>24.8K</Text></Text></Pressable><Pressable><Text style={styles.action}>◯{"\n"}<Text style={styles.count}>682</Text></Text></Pressable><Pressable><Text style={styles.action}>⇩{"\n"}<Text style={styles.count}>Save</Text></Text></Pressable></View><Pressable style={styles.play} onPress={() => setPlaying(playing === item.id ? null : item.id)}><Text style={styles.playText}>{playing === item.id ? "Ⅱ" : "▶"}</Text></Pressable></View>} /></SafeAreaView>;
+}
+
+const styles = StyleSheet.create({ safe: { flex: 1, backgroundColor: "#191827" }, header: { position: "absolute", zIndex: 2, top: 45, left: 18, right: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }, logo: { color: "white", fontSize: 22, fontWeight: "700" }, search: { color: "white", fontSize: 30 }, card: { height: Dimensions.get("window").height, justifyContent: "flex-end", padding: 24 }, shade: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,.22)" }, copy: { marginBottom: 35, width: "80%" }, tag: { color: "white", fontSize: 11, letterSpacing: 2, fontWeight: "700", marginBottom: 12 }, title: { color: "white", fontSize: 27, fontWeight: "700", lineHeight: 33 }, creator: { color: "white", marginTop: 10, fontSize: 14 }, actions: { position: "absolute", right: 18, bottom: 90, gap: 24 }, action: { color: "white", fontSize: 31, textAlign: "center" }, count: { fontSize: 11, fontWeight: "600" }, play: { position: "absolute", top: "48%", left: "47%", backgroundColor: "rgba(255,255,255,.25)", borderRadius: 40, padding: 16 }, playText: { color: "white", fontSize: 23 } });
